@@ -1,1 +1,29 @@
-[]
+[
+  {
+    "id": 1,
+    "name": "VIRGINIA CONNER",
+    "number": "4753434345",
+    "email": "polony@mailinator.com",
+    "destination": "Meghalaya",
+    "dayPlan": "7D8N",
+    "date": "1985-03-31"
+  },
+  {
+    "id": 2,
+    "name": "KAY BRANCH",
+    "number": "9212121233",
+    "email": "kyjopiduby@mailinator.com",
+    "destination": "Meghalaya",
+    "dayPlan": "4D5N",
+    "date": "1974-03-15"
+  },
+  {
+    "id": 3,
+    "name": "REED WALSH",
+    "number": "2633432345",
+    "email": "qokosyraf@mailinator.com",
+    "destination": "Meghalaya",
+    "dayPlan": "3D4N",
+    "date": "2004-09-21"
+  }
+]

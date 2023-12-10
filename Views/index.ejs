@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ruh Ae Safar | Your Travel Partner</title>
+    <title><%= user?'Modify Booking':pageTitle %></title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -117,12 +117,7 @@
         <div class="left">
           <div class="f1" style="display: flex; flex-direction: column">
             <label for="name">Name</label>
-            <input
-              id="name"
-              type="text"
-              name="Name"
-              placeholder="Enter your name..."
-            />
+            <input id="name" type="text" name="Name" placeholder="Enter your name..." value= "<%= user? user.name:"" %>" />
             <small style="color: red" id="nameError"></small>
           </div>
           <div class="f1" style="display: flex; flex-direction: column">
@@ -132,6 +127,7 @@
               type="number"
               name="Number"
               placeholder="Enter your phone number..."
+              value= "<%= user? user.number:"" %>"
             />
             <small style="color: red" id="numberError"></small>
           </div>
@@ -141,11 +137,11 @@
               <option value="" style="display: none" selected>
                 Select Days
               </option>
-              <option value="3D4N">3 Days & 4 Nights</option>
-              <option value="4D5N">4 Days & 5 Nights</option>
-              <option value="5D6N">5 Days & 6 Nights</option>
-              <option value="6D7N">6 Days & 7 Nights</option>
-              <option value="7D8N">7 Days & 8 Nights</option>
+              <option value="3D4N" <%= user && user.dayPlan === "3D4N"? "selected" : "" %>>3 Days & 4 Nights</option>
+              <option value="4D5N" <%= user && user.dayPlan === "4D5N"? "selected" : "" %>>4 Days & 5 Nights</option>
+              <option value="5D6N" <%= user && user.dayPlan === "5D6N"? "selected" : "" %>>5 Days & 6 Nights</option>
+              <option value="6D7N" <%= user && user.dayPlan === "6D7N"? "selected" : "" %>>6 Days & 7 Nights</option>
+              <option value="7D8N" <%= user && user.dayPlan === "7D8N"? "selected" : "" %>>7 Days & 8 Nights</option>
             </select>
           </div>
           <small style="color: red" id="dayPlanError"></small>
@@ -159,6 +155,7 @@
               type="text"
               name="Email"
               placeholder="Enter your Email..."
+              value= "<%= user? user.email:"" %>"
             />
             <small style="color: red" id="emailError"></small>
           </div>
@@ -168,18 +165,18 @@
               <option value="" style="display: none" selected>
                 Select Destination
               </option>
-              <option value="Kashmir">Kashmir</option>
-              <option value="Manali">Manali</option>
-              <option value="Delhi">Delhi</option>
-              <option value="Rajasthan">Rajasthan</option>
-              <option value="Meghalaya">Meghalaya</option>
-              <option value="Goa">Goa</option>
+              <option value="Kashmir" <%= user && user.destination === "Kashmir"? "selected" : "" %>>Kashmir</option>
+              <option value="Manali" <%= user && user.destination === "Manali"? "selected" : "" %>>Manali</option>
+              <option value="Delhi" <%= user && user.destination === "Delhi"? "selected" : "" %>>Delhi</option>
+              <option value="Rajasthan" <%= user && user.destination === "Rajasthan"? "selected" : "" %>>Rajasthan</option>
+              <option value="Meghalaya" <%= user && user.destination === "Meghalaya"? "selected" : "" %>>Meghalaya</option>
+              <option value="Goa" <%= user && user.destination === "Goa"? "selected" : "" %>>Goa</option>
             </select>
             <small style="color: red" id="destinationError"></small>
           </div>
           <div class="f1" style="display: flex; flex-direction: column">
             <label for="date">Date</label>
-            <input id="date" type="date" name="Date" />
+            <input id="date" type="date" name="Date" value= "<%= user? user.date:"" %>" />
             <small style="color: red" id="dateError"></small>
           </div>
         </div>
@@ -198,10 +195,12 @@
       <input
         id="submit"
         type="button"
-        value="Book The Trip"
         style="background-color: maroon; color: white; width: 15rem"
+        value= "<%= user? "Modify" : "Book The Trip" %>"
       />
     </div>
+
+    <small id="modifyingUid" style="display: none;"><%=user? user.id : ""%></small>
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
@@ -269,7 +268,8 @@
             destinationValid &&
             dateValid
           ) {
-            //Store this value into an object
+            if (submitButton.value === "Book The Trip") {
+              //Store this value into an object
             const userData = {
               id,
               name,
@@ -299,8 +299,35 @@
               }
             });
             window.location.href = "/bookingstable"; //And at last we display the user entered data along with the previous datas as a table.
-          }
-        });
+            } else {
+              const mId = parseInt(document.getElementById("modifyingUid").textContent)
+              // alert(mId);
+              const updatedData = {
+                id:mId,
+                name,
+                number,
+                email,
+                destination,
+                dayPlan,
+                date,
+              }
+
+              fetch("/modifyuser/" + mId, {
+                method:"PUT",
+                headers: { "Content-Type" : "application/json"},
+                body: JSON.stringify(updatedData)
+              }).then(response => {
+                if (response.status === 200) {
+                  console.log("Modified data updated successfuly");
+                  alert("Data modified")
+                  window.location.href = "/bookingstable"
+                } else {
+                  console.log("Error updating user data", response.status, response.statusText);
+                }
+              })
+            }
+          }  
+       });
       });
     </script>
   </body>

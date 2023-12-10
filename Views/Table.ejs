@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ruh Ae Safar | User Details</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Abhaya+Libre&family=Alegreya:ital@1&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      #userListContainer {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin-top: 30px;
+        border-radius: 10px;
+        padding: 20px;
+        font-family: "Abhaya Libre", serif;
+        color: maroon;
+      }
+      #userList {
+        border-collapse: collapse;
+        margin: 25px 0;
+        width: 96%;
+        font-size: 18px;
+        border-radius: 5px 5px 0 0;
+        background-color: rgb(255, 245, 245);
+        overflow: hidden;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+      }
+      #userList th {
+        background-color: rgb(102, 0, 0);
+        color: white;
+        text-align: left;
+        font-weight: bold;
+      }
+      #userList th,
+      #userList td {
+        padding: 12px 15px;
+      }
+      #userList tr {
+        border-bottom: 1px solid #484848;
+      }
+      #userList tr:nth-child(1) {
+        border-bottom: 0;
+      }
+      #userList tr:nth-of-type(even) {
+        background-color: rgb(255, 230, 230);
+      }
+      #userList tr:last-of-type {
+        border-bottom: 2px solid maroon;
+      }
+      input,
+      select,
+      option {
+        font-family: "Abhaya Libre", serif;
+        padding: 10px;
+        width: 18rem;
+        border-radius: 8px;
+        font-size: 18px;
+        border: 1.5px solid maroon;
+      }
+      input:focus,
+      select:focus {
+        outline: none;
+        border-color: rgb(0, 135, 0);
+      }
+      #submit:focus {
+        border-color: maroon;
+      }
+      select {
+        width: 19.5rem;
+      }
+      label {
+        font-size: 18px;
+        margin-top: 30px;
+        margin-bottom: 2px;
+        color: maroon;
+      }
+      #submit:hover {
+        cursor: pointer;
+      }
+      button:hover {
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body style="background-color: rgb(253, 251, 243)">
+    <nav
+      style="
+        background-color: rgb(241, 234, 210);
+        height: 60px;
+        padding-left: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1.5px solid maroon;
+      "
+    >
+      <h1
+        style="
+          background-color: rgb(241, 234, 210);
+          font-family: 'Alegreya', serif;
+          color: maroon;
+          font-size: 36px;
+          letter-spacing: 1px;
+        "
+      >
+        Ruh' ae___Safar.
+      </h1>
+      <input
+        id="bHistory"
+        type="button"
+        value="Home"
+        style="
+          color: maroon;
+          width: fit-content;
+          border-radius: 50px;
+          margin-right: 40px;
+          border: 0;
+        "
+        onclick="(() =>  window.location.href = '/home')()"
+      />
+    </nav>
+
+    <div class="allcontainer" style="position: relative">
+      <div id="userListContainer">
+        <h3
+          style="
+            font-size: 24px;
+            font-size: 2rem;
+            font-style: italic;
+            letter-spacing: 2px;
+          "
+        >
+          <u>User Bookings</u>
+        </h3>
+        <table id="userList">
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Name</th>
+              <th>Phone Number</th>
+              <th>Email Id</th>
+              <th>Destination</th>
+              <th>Day Plan</th>
+              <th>Date</th>
+              <th style="text-align: center">Action</th>
+            </tr>
+          </thead>
+          <tbody id="userData"></tbody>
+        </table>
+      </div>
+
+    <script>
+      //Adding data from json to the table
+      document.addEventListener("DOMContentLoaded", () => {
+        fetch("/getdata", {
+          method: "GET"
+        })
+          .then((response) => response.json()) //.json() is an easy method that will convert a json object into a js object. behind the method ".json()" it uses the normal "JSON.parse()" method. the ".json()" method will be more convenient to use when working with fetch and promises.
+          .then((data) => {
+            //Now we have all the objects (data) from the json database as js objects. now we have to add that object properties into relevent columns in the table of table.html.
+            const userData = document.getElementById("userData"); //loading the tbody into js. bcz, we have to add rows into this tbody section.
+
+            data.forEach((element) => {
+              //This element means, an single object in the json database which contains many objects like this. this for each iterates over every objects included in the json database.
+              const row = document.createElement("tr"); //variable for ceating a new row.
+
+              row.innerHTML = `
+              <td>${element.id}</td>
+              <td>${element.name}</td>
+              <td>${element.number}</td>
+              <td>${element.email}</td>
+              <td>${element.destination}</td>
+              <td>${element.dayPlan}</td>
+              <td>${element.date}</td>
+              <td style=" align-items: center; justify-content: space-around;">
+                  <button
+                      style="
+                        padding:4px;
+                        background-color:rgb(234, 195, 195);
+                        color:maroon;
+                        width:85px;
+                        height: 30px;
+                        border-radius:5px;
+                        border:0"
+                      onclick= "modifyUser ('${element.id}')"
+                  >Modify</button>
+                  <button
+                      style="
+                        padding:4px;
+                        margin-top:4px;
+                        background-color:
+                        rgb(168, 0, 0);
+                        color: white;
+                        width:85px;
+                        height: 30px;
+                        border-radius: 5px;
+                        border:0"
+                      onclick = "deleteUser ('${element.id}')"
+                  >Delete</button>
+              </td>
+              `;
+
+              userData.appendChild(row);
+            });
+          })
+          .catch((err) => {
+            console.error("Error loading the content", err);
+          });
+      });
+
+      //Modification part
+      function modifyUser(mId) {
+        window.location.href = `/modifyuserpage/${mId}`;
+      }
+
+      //User deletion Part
+      function deleteUser(userId) {
+        fetch(`/deleteUser/${userId}`, {
+          method: "DELETE",
+        }).then((response) => {
+          if (response.status === 200) {
+            alert("Booking deleted successfully");
+            window.location.href = "/bookingstable";
+          } else {
+            console.error("Unexpected error occured");
+          }
+        });
+      }
+    </script>
+  </body>
+</html>
