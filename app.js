@@ -3,6 +3,7 @@ const ejs = require("ejs");
 const bodyparser = require("body-parser"); //for the easy conversion of JSON string to JavaScript Object. use a middleware for achieve that
 const path = require("path");
 const fs = require("fs");
+const { send } = require("process");
 
 const app = express(); //now we can access express function through this variable.
 app.set("view engine", "ejs"); //ejs is set as the default template engine.
@@ -190,6 +191,65 @@ app.put("/modifyuser/:id", (req, res) => {
           .status(500)
           .send(
             `Unexpected error occured while updating the modified data due to ${error}`
+          );
+      }
+    }
+  });
+});
+
+// Deleting Section
+app.delete("/deleteUser/:id", (req, res) => {
+  const userId = parseInt(req.params.id);
+
+  fs.readFile("./data/users.json", "utf-8", (err, data) => {
+    if (err) {
+      console.error("Error reading database for deleting user");
+      res.status(500).send("Error reading database for deleting user");
+    } else {
+      try {
+        let existingData = JSON.parse(data); //This is an array, and also we have to reassign this with new array after deletion of a user, so remomber to declare it in let, not as const.
+        const index = existingData.findIndex((user) => user.id === userId); // Found the index number of requested object of user to delete.
+        if (index !== -1) {
+          existingData.splice(index, 1); // Removed the requested user from the array of objects.
+
+          // Now we have to update the user id after removal of a user.
+          existingData = existingData.map((object, index) => {
+            object.id = index + 1;
+            return object;
+          });
+
+          // Now we have to rewrite the database with the new data contained in existingData.
+          fs.writeFile(
+            "./data/users.json",
+            JSON.stringify(existingData, null, 2),
+            (writeError) => {
+              if (writeError) {
+                console.error("Error while writing database after deletion");
+                res
+                  .status(500)
+                  .send("Error while writing database after deletion");
+              } else {
+                console.log("Database updated successfully after deletion");
+                res
+                  .status(200)
+                  .send("Database updated successfully after deletion");
+              }
+            }
+          );
+        } else {
+          console.log(`The given user id ${userId} not found`);
+          res.status(404), send(`User id ${userId} not found`);
+        }
+      } catch (error) {
+        console.error(
+          "Unexpected error occured while deleting user from database",
+          error
+        );
+        res
+          .status(500)
+          .send(
+            "Unexpected error occured while deleting user from database",
+            error
           );
       }
     }

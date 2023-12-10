@@ -193,7 +193,7 @@
                         height: 30px;
                         border-radius:5px;
                         border:0"
-                      onclick= "modifyUser ('${element.id}')"
+                      onclick= "modifyUserPage ('${element.id}')"
                   >Modify</button>
                   <button
                       style="
@@ -220,7 +220,7 @@
       });
 
       //Modification part
-      function modifyUser(mId) {
+      function modifyUserPage(mId) {
         window.location.href = `/modifyuserpage/${mId}`;
       }
 
@@ -233,7 +233,7 @@
             alert("Booking deleted successfully");
             window.location.href = "/bookingstable";
           } else {
-            console.error("Unexpected error occured");
+            console.error("Unexpected error occured while deleting user details");
           }
         });
       }
