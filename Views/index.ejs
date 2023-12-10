@@ -221,7 +221,7 @@
           let dayPlanValid = dayPlan !== "" || dayPlan === "Select Days";
           let destinationValid =
             destination !== "" || destination === "Select Destination";
-          let dateValid = /^\d{4}-\d{2}-\d{2}$/.test(date);
+          let dateValid = /^\d{4}-\d{2}-\d{2}$/.test(date) && new Date(date) > new Date();
 
           if (!nameValid) {
             document.getElementById("nameError").innerHTML =
