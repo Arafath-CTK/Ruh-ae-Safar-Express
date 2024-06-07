@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "id": 1,
+    "name": "NITA KLEIN",
+    "number": "7341223434",
+    "email": "dehi@mailinator.com",
+    "destination": "Rajasthan",
+    "dayPlan": "3D4N",
+    "date": "2023-12-17"
+  }
+]
